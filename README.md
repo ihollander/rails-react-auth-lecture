@@ -2,7 +2,7 @@
 
 ## Session-Based Auth vs Token-Based Auth
 
-In the video below, I discuss two approaches to auth working with separate frontend and backend applications, and some pros and cons of each approach. After watching this, you can decide to go to the [Session-Based Auth](session-based-Auth) section or [Token-Based Auth](token-based-auth) section in this readme based on what you'd like to implement in your application.
+In the video below, I discuss two approaches to auth working with separate frontend and backend applications, and some pros and cons of each approach. After watching this, you can decide to go to the [Session-Based Auth](#session-based-auth) section or [Token-Based Auth](#token-based-auth) section in this readme based on what you'd like to implement in your application.
 
 - [Video](https://youtu.be/nYiHOdtmGFw)
 - [Slides](https://docs.google.com/presentation/d/1gzsNKLIpGWuNy31aiZZE6AzD9mcET0-bw0RqgQ8j7tM/edit?usp=sharing)
