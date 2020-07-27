@@ -2,7 +2,7 @@ import React from 'react'
 
 class Profile extends React.Component {
   state = {
-    image: this.props.currentUser.image,
+    avatar: this.props.currentUser.avatar,
     bio: this.props.currentUser.bio
   }
 
@@ -12,12 +12,22 @@ class Profile extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    // TODO: make a fetch request to edit the current user
+    // make a fetch request to edit the current user
+    fetch("http://localhost:3000/profile", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.token}`
+      },
+      body: JSON.stringify(this.state)
+    })
+      .then(r => r.json())
+      .then(console.log)
     // then update that user in state in our App component
   }
 
   render() {
-    const { image, bio } = this.state
+    const { avatar, bio } = this.state
     const { username } = this.props.currentUser
 
     return (
@@ -27,12 +37,12 @@ class Profile extends React.Component {
         <label>Profile Image</label>
         <input
           type="text"
-          name="image"
+          name="avatar"
           autoComplete="off"
-          value={image}
+          value={avatar}
           onChange={this.handleChange}
         />
-        <img src={image.length ? image : "https://cdn.iconscout.com/icon/free/png-512/account-profile-avatar-man-circle-round-user-30452.png"} alt={username} />
+        <img src={avatar.length ? avatar : "https://cdn.iconscout.com/icon/free/png-512/account-profile-avatar-man-circle-round-user-30452.png"} alt={username} />
 
         <label>Bio</label>
         <textarea

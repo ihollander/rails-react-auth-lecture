@@ -12,8 +12,22 @@ class App extends React.Component {
 
   // log user in when component mounts
   componentDidMount() {
-    // TODO: check if user is logged in
-    // and set current user in state
+    // check if user is logged in
+    if (localStorage.token) {
+      fetch(`http://localhost:3000/autologin`, {
+        headers: {
+          "Authorization": `Bearer ${localStorage.token}`
+        }
+      })
+        .then(r => r.json())
+        .then(data => {
+          // check for errors (could also check the status code of the response)
+          if (!data.error) {
+            // and set current user in state
+            this.handleLogin(data)
+          }
+        })
+    }
   }
 
   updateUser = newUser => {
@@ -28,8 +42,12 @@ class App extends React.Component {
   }
 
   handleLogout = () => {
-    // TODO: make a request to log out the user
+    // remove the userId from localstorage
+    localStorage.removeItem("token")
     // and clear the user in state
+    this.setState({
+      currentUser: null
+    })
   }
 
   render() {

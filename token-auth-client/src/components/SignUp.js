@@ -3,7 +3,7 @@ import React from 'react'
 class SignUp extends React.Component {
   state = {
     username: "",
-    image: "",
+    avatar: "",
     bio: "",
     password: ""
   }
@@ -15,11 +15,26 @@ class SignUp extends React.Component {
   handleSubmit = e => {
     e.preventDefault()
     // TODO: make a fetch request to sign up the current user
-    // then set that user in state in our App component
+    fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(this.state)
+    })
+      .then(r => r.json())
+      // then set that user in state in our App component
+      .then(data => {
+        const { user, token } = data
+
+        this.props.handleLogin(user)
+        // also save the id to localStorage
+        localStorage.token = token
+      })
   }
 
   render() {
-    const { username, image, bio, password } = this.state
+    const { username, avatar, bio, password } = this.state
 
     return (
       <form onSubmit={this.handleSubmit}>
@@ -37,12 +52,12 @@ class SignUp extends React.Component {
         <label>Profile Image</label>
         <input
           type="text"
-          name="image"
+          name="avatar"
           autoComplete="off"
-          value={image}
+          value={avatar}
           onChange={this.handleChange}
         />
-        <img src={image.length ? image : "https://cdn.iconscout.com/icon/free/png-512/account-profile-avatar-man-circle-round-user-30452.png"} alt={username} />
+        <img src={avatar.length ? avatar : "https://cdn.iconscout.com/icon/free/png-512/account-profile-avatar-man-circle-round-user-30452.png"} alt={username} />
 
         <label>Bio</label>
         <textarea

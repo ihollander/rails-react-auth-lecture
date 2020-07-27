@@ -13,7 +13,22 @@ class Login extends React.Component {
   handleSubmit = e => {
     e.preventDefault()
     // TODO: make a fetch request to login the current user
-    // then set that user in state in our App component
+    fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(this.state)
+    })
+      .then(r => r.json())
+      .then(data => {
+        console.log(data)
+        const { user, token } = data
+        // then set that user in state in our App component
+        this.props.handleLogin(user)
+        // also save the id to localStorage
+        localStorage.token = token
+      })
   }
 
   render() {

@@ -31,3 +31,5 @@ Here are all the individual video links:
 ## Token-Based Auth
 
 🚧 UNDER CONSTRUCTION 🚧
+
+You can find a README and some server code from a lab on JWT Auth here: https://github.com/learn-co-curriculum/jwt-auth-rails
