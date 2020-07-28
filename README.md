@@ -30,6 +30,19 @@ Here are all the individual video links:
 
 ## Token-Based Auth
 
-🚧 UNDER CONSTRUCTION 🚧
+Completed code for this section is in `token-auth-client` and `token-auth-server`. You'll also find more notes in the [TOKEN.md](TOKEN.md) readme. You can find also find a README and some server code from a lab on JWT Auth here: https://github.com/learn-co-curriculum/jwt-auth-rails
 
-You can find a README and some server code from a lab on JWT Auth here: https://github.com/learn-co-curriculum/jwt-auth-rails
+- [Playlist with all the videos]()
+
+Here are all the individual video links:
+
+- [Part 1: Rails Setup]()
+- [Part 2: Sign Up]()
+- [Part 3: Login]()
+- [Part 4: Autologin]()
+- [Part 5: Logout]()
+- [Part 6: JWT]()
+- [Part 7: Controller Refactor]()
+- [Part 8: Authorization]()
+- [Part 9: Wrap Up]()
+- [Wrap Up Slides](https://docs.google.com/presentation/d/1KnY32BVLWGwrT8nhxRM9kigAEV1VijYDegW60EaBvVY/edit?usp=sharing)
