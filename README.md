@@ -32,17 +32,17 @@ Here are all the individual video links:
 
 Completed code for this section is in `token-auth-client` and `token-auth-server`. You'll also find more notes in the [TOKEN.md](TOKEN.md) readme. You can find also find a README and some server code from a lab on JWT Auth here: https://github.com/learn-co-curriculum/jwt-auth-rails
 
-- [Playlist with all the videos]()
+- [Playlist with all the videos](https://www.youtube.com/playlist?list=PLc6AmvC5Zybyd4xpZ6gFlXZquequ9WzmQ)
 
 Here are all the individual video links:
 
-- [Part 1: Rails Setup]()
-- [Part 2: Sign Up]()
-- [Part 3: Login]()
-- [Part 4: Autologin]()
-- [Part 5: Logout]()
-- [Part 6: JWT]()
-- [Part 7: Controller Refactor]()
-- [Part 8: Authorization]()
-- [Part 9: Wrap Up]()
-- [Wrap Up Slides](https://docs.google.com/presentation/d/1KnY32BVLWGwrT8nhxRM9kigAEV1VijYDegW60EaBvVY/edit?usp=sharing)
+- [Part 1: Rails Setup](https://youtu.be/OzZYJF2RBMg)
+- [Part 2: Sign Up](https://youtu.be/UDMsjPw-O_0)
+- [Part 3: Login](https://youtu.be/_t3pBoVzBBE)
+- [Part 4: Autologin](https://youtu.be/7M8f7r5qcU0)
+- [Part 5: Logout](https://youtu.be/S60NOlWB9Fs)
+- [Part 6: JWT](https://youtu.be/tHaV7e4FQ8E)
+- [Part 7: Controller Refactor](https://youtu.be/oLkw_ozCQjo)
+- [Part 8: Authorization](https://youtu.be/-n1YZc4KN0M)
+- [Part 9: Wrap Up](https://youtu.be/g2H5XQByAbM)
+- [Wrap Up Slides](https://docs.google.com/presentation/d/1rdMuw0WS0L5CrK8_pZKDr7nTysO931pEOxml7D4eS5c/edit#slide=id.g868747450a_0_84)
