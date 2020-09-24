@@ -459,7 +459,7 @@ class UsersController < ApplicationController
         # make sure your .env file has a matching key
         validator.check(token_id, ENV["GOOGLE_OAUTH_CLIENT_ID"])
       rescue GoogleIDToken::ValidationError => e
-        report "Cannot validate: #{e}"
+        p "Cannot validate: #{e}"
       end
     end
   end

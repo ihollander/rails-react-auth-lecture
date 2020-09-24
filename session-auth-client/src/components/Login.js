@@ -8,7 +8,6 @@ class Login extends React.Component {
   }
 
   responseGoogle = (response) => {
-    // In the responseGoogle(response) {...} callback function, you should get back a standard JWT located at response.tokenId or res.getAuthResponse().id_token
     if (response.tokenId) {
       fetch("http://localhost:3000/google_login", {
         method: "POST",
@@ -18,16 +17,10 @@ class Login extends React.Component {
           "Authorization": `Bearer ${response.tokenId}`
         }
       })
-      //   .then(r => r.json())
-      //   .then(user => {
-      //     this.props.handleLogin(user)
-      //   })
-      /* 
-      Send this token to your server (preferably as an Authorization header)
-      Have your server decode the id_token by using a common JWT library such as jwt-simple or by sending a GET request to https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=YOUR_TOKEN_HERE
-      The returned decoded token should have an hd key equal to the hosted domain you'd like to restrict to.
-      */
-      console.log(response);
+      .then(r => r.json())
+      .then(user => {
+        this.props.handleLogin(user)
+      })
     }
   }
 
