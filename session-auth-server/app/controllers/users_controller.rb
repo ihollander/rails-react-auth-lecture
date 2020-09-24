@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :authorized, only: [:create, :login]
-  
+  skip_before_action :authorized, only: [:create, :login, :google_login]
+
   def create
     # create a user in the database
     user = User.create(
@@ -59,6 +59,41 @@ class UsersController < ApplicationController
 
     # send some response to our frontend so we know the request succeeded
     render json: { message: "Logged Out" }
+  end
+
+  def google_login
+    payload = get_google_token_payload
+    if payload
+      # find/create user from payload
+      user = User.from_google_signin(payload)
+
+      # if the user exists or was successfully created
+      if user
+        # save user_id in session so we can use it in future requests
+        session[:user_id] = user.id
+        # return the user in the response
+        render json: user
+        return
+      end
+    end
+    
+    # for invalid username/password combos, send error messages to the front end
+    render json: { message: "Could not log in" }, status: :unauthorized
+  end
+
+  # TODO: refactor lol
+  private
+
+  def get_google_token_payload
+    if request.headers["Authorization"]
+      token_id = request.headers["Authorization"].split(" ")[1]
+      validator = GoogleIDToken::Validator.new
+      begin
+        validator.check(token_id, ENV["GOOGLE_OAUTH_CLIENT_ID"])
+      rescue GoogleIDToken::ValidationError => e
+        p "Cannot validate: #{e}"
+      end
+    end
   end
 
 end
