@@ -271,3 +271,221 @@ Play around with the sample app and drop some `byebug`s in your backend when the
   - this also shows how to enable CSRF protection for added security
 - [JWT Storage in Rails + React](https://www.thegreatcodeadventure.com/jwt-storage-in-rails-the-right-way/)
   - this advocates for using JWT tokens instead of Rails sessions as an auth mechanism, but it's a useful resource for seeing how to use HTTPOnly cookies
+
+
+## Bonus: Google Sign In
+
+### Google Setup
+
+Follow the steps to create your authorization credentials (just up to step 4 under "Create authorization credentials" - skip the sections below that):
+
+https://developers.google.com/identity/sign-in/web/sign-in
+
+Take note of the **client ID** - you'll need that later for React and Rails.
+
+### Frontend Setup
+
+First let's save the client ID in a `.env` file so we can access that later. In the root of your React application, create a file called `.env` and add your Google client ID, like so:
+
+```env
+REACT_APP_GOOGLE_CLIENT_ID=739034625712-ads90ik8978gyahbbdf7823asd8213as.apps.googleusercontent.com
+```
+
+Next, install this package:
+
+```sh
+npm install react-google-login
+```
+
+We'll use this to display a Google sign in button and handle logic for authenticating the user with Google. Update the `<Login>` component like this:
+
+```jsx
+import React from 'react'
+import { GoogleLogin } from 'react-google-login';
+
+class Login extends React.Component {
+  state = {
+    username: "",
+    password: ""
+  }
+
+  // new code!
+  handleGoogleLogin = (response) => {
+    // we'll get a tokenId back from Google on successful login that we'll send to our server to find/create a user
+    if (response.tokenId) {
+      fetch("http://localhost:3000/google_login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${response.tokenId}`
+        }
+      })
+      .then(r => r.json())
+      .then(user => {
+        this.props.handleLogin(user)
+      })
+    }
+  }
+
+  // old code
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  // old code
+  handleSubmit = e => {
+    e.preventDefault()
+    fetch("http://localhost:3000/login", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(this.state)
+    })
+      .then(r => r.json())
+      .then(user => {
+        this.props.handleLogin(user)
+      })
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <h1>Login</h1>
+          <label>Username</label>
+          <input type="text" name="username" autoComplete="off" value={this.state.username} onChange={this.handleChange} />
+          <label>Password</label>
+          <input type="password" name="password" value={this.state.password} onChange={this.handleChange} autoComplete="current-password" />
+          <input type="submit" value="Login" />
+        </form>
+        <hr />
+        <div>
+          {/* this is the new component that will help with Google sign in */}
+          <GoogleLogin
+            clientId={process.env.REACT_APP_GOOGLE_OAUTH_CLIENT_ID}
+            buttonText="Login"
+            onSuccess={this.handleGoogleLogin}
+            onFailure={this.handleGoogleLogin}
+            cookiePolicy={'single_host_origin'}
+          />
+        </div>
+      </div>
+    )
+  }
+}
+
+export default Login
+```
+
+That's it for the frontend! The backend will take more work to set up.
+
+### Backend Setup
+
+First, we'll need to install a couple gems:
+
+```sh
+bundle add google-id-token
+bundle add dotenv-rails
+```
+
+Next, create a `.env` file in the root of your project directory and add the Google client ID:
+
+```env
+GOOGLE_OAUTH_CLIENT_ID=739034625712-ads90ik8978gyahbbdf7823asd8213as.apps.googleusercontent.com
+```
+
+You should also update your `.gitignore` file so that your `.env` file isn't checked into Github:
+
+```gitignore
+# add this at the bottom of the file
+# .env files
+.env*
+```
+
+Next, add a route for handling the Google login request:
+
+```rb
+# config/routes.rb
+post "/google_login", to: "users#google_login"
+```
+
+Then, update your `UserController` to handle this request:
+
+```rb
+# app/controllers/user_controller.rb
+class UsersController < ApplicationController
+  # don't run authorize before google_login, remember - authorized should only run for methods where we expect the user is *already* logged in
+  skip_before_action :authorized, only: [:create, :login, :google_login]
+
+  # other methods here...
+
+  def google_login
+    # use a helper method to extract the payload from the google token
+    payload = get_google_token_payload
+    if payload
+      # find/create user from payload (this will be a new method in the User model)
+      user = User.from_google_signin(payload)
+
+      if user
+        # if the user exists or was successfully created
+        # save user_id in session so we can use it in future requests
+        session[:user_id] = user.id
+        # return the user in the response
+        render json: user
+        return
+      end
+    end
+    
+    # for invalid requests, send error messages to the front end
+    render json: { message: "Could not log in" }, status: :unauthorized
+  end
+
+  private
+
+  # helper function to validate the user's token from Google and extract their info
+  def get_google_token_payload
+    if request.headers["Authorization"]
+      # extract the token from the Authorization header
+      token_id = request.headers["Authorization"].split(" ")[1]
+
+      # this is the code from the Google auth gem
+      validator = GoogleIDToken::Validator.new
+      begin
+
+        # check the token_id and return the payload
+        # make sure your .env file has a matching key
+        validator.check(token_id, ENV["GOOGLE_OAUTH_CLIENT_ID"])
+      rescue GoogleIDToken::ValidationError => e
+        report "Cannot validate: #{e}"
+      end
+    end
+  end
+
+```
+
+We'll also add a helper method for creating a new user from the Google payload:
+
+```rb
+# app/models/user.rb
+class User < ApplicationRecord
+  has_secure_password
+
+  validates :username, presence: true, uniqueness: { case_sensitive: false }
+
+  def self.from_google_signin(payload)
+    # find or create a user based on the email address from the Google payload
+    User.where(username: payload["email"]).first_or_create do |new_user|
+      new_user.username = payload["email"]
+      new_user.image = payload["picture"]
+      # we need to assign a password to satisfy bcrypt, so generate a random one...
+      new_user.password = SecureRandom.base64(15)
+    end
+  end
+  
+end
+```
+
+Now, test it out! You should be able to login with your Google account and create a new User instance in the backend with that information.
