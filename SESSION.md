@@ -275,6 +275,13 @@ Play around with the sample app and drop some `byebug`s in your backend when the
 
 ## Bonus: Google Sign In
 
+Resources:
+- [Google Sign-in Basics](https://developers.google.com/identity/sign-in/web/sign-in)
+- [Backend Authentication](https://developers.google.com/identity/sign-in/web/backend-auth)
+- [React Google Login package](https://www.npmjs.com/package/react-google-login)
+- [dotenv-rails gem](https://github.com/bkeepers/dotenv)
+- [google-id-token gem](https://github.com/google/google-id-token)
+
 ### Google Setup
 
 Follow the steps to create your authorization credentials (just up to step 4 under "Create authorization credentials" - skip the sections below that):
